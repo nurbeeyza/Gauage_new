@@ -70,7 +70,7 @@ Window {
                         text: String(Math.round(value))
                         font.pixelSize: 10
                         anchors.centerIn: parent
-                        color: "black"
+                        color: "blue"
                     }
 
                     Rectangle {
