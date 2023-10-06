@@ -28,7 +28,7 @@ Window {
             width: height * 0.2
             height: parent.height * 0.8
             color: "#DFDFDE"
-            radius: 15
+            radius: 16
             anchors.centerIn: parent
 
             Rectangle {
@@ -36,7 +36,7 @@ Window {
                 width: height * 0.2
                 height: parent.height * 0.9
                 color:"#F7F7F7"
-                radius: 15
+                radius: 16
                 anchors.centerIn: parent
 
                 Rectangle {
@@ -45,7 +45,7 @@ Window {
                     height: parent.height * 0.9
                     color: "#DFDFDE"
                     anchors.centerIn: parent
-                    radius:5
+                    radius:6
 
                     Repeater {
                         model: numOfTickmarks + 1 // +1 to include the maxValue tick mark
@@ -67,7 +67,7 @@ Window {
                         width: 6
                         height: Math.min(gauge.height, (value - minValue) / (maxValue - minValue) * gauge.height)
                         color: isGaugeFull ? "red" : "#6495ED"
-                        radius: 10
+                        radius: 15
 
                         anchors {
                             bottom: gauge.bottom
