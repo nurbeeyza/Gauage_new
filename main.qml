@@ -12,7 +12,7 @@ Window {
 
     property real minValue: 0
     property real maxValue: 25
-    property int numOfTickmarks: 5
+    property int numOfTickmarks: 9
     property real value: 0
     property bool isGaugeFull: value >= maxValue
     property bool isGaugeEmpty: value <= minValue
@@ -33,11 +33,13 @@ Window {
 
             Rectangle {
                 id: gauageB
-                width: height * 0.2
-                height: parent.height * 0.9
+                width: rectGaugeWrapper.width * 0.8
+                height: rectGaugeWrapper.height * 0.8
                 color:"#F7F7F7"
                 radius: 16
-                anchors.centerIn: parent
+                anchors.centerIn: rectGaugeWrapper
+                anchors.bottomMargin: rectGaugeWrapper.height * 0.05
+                anchors.topMargin: rectGaugeWrapper.height * 0.05
 
                 Rectangle {
                     id: gauge
@@ -61,13 +63,12 @@ Window {
                             }
                         }
                     }
-
                     Rectangle {
                         id: gaugeA
                         width: 6
                         height: Math.min(gauge.height, (value - minValue) / (maxValue - minValue) * gauge.height)
                         color: isGaugeFull ? "red" : "#6495ED"
-                        radius: 15
+                        radius: 20
 
                         anchors {
                             bottom: gauge.bottom
@@ -75,22 +76,26 @@ Window {
                         }
                         z: 1
                     }
+
+                    // Yuvarlak termometre üstündeki nesne
+                    Item {
+                        width: 20
+                        height: 20
+                        anchors {
+                            bottom: gauge.bottom
+                            horizontalCenter: gauge.horizontalCenter
+                            bottomMargin: -3
+                        }
+
+                        Rectangle {
+                            width: 20
+                            height: 20
+                            color: "#DFDFDE"
+                            radius:9
+                        }
+                    }
                 }
             }
-
-            /* Text {
-                width: rectGaugeWrapper.width * 0.5
-                height: rectGaugeWrapper.height * 0.2
-                anchors.horizontalCenter: rectGaugeWrapper.horizontalCenter
-                anchors.bottom: rectGaugeWrapper.bottom
-                anchors.bottomMargin: 3
-                text: String(Math.round(value))
-                color: "blue"
-                font.pixelSize: height
-                fontSizeMode: Text.HorizontalFit
-                minimumPixelSize:8
-                elide: Text.ElideRight
-            } */
         }
 
         Row {
@@ -100,6 +105,7 @@ Window {
             anchors.topMargin: 3
 
             Button {
+                id: plusButton
                 text: "+"
                 width: 40
                 height: 40
@@ -109,26 +115,72 @@ Window {
 
                 onClicked: {
                     if (isPlusButtonClickable && value < maxValue) {
-                        value += 1
+                        value += 1;
                         isPlusButtonClickable = !isGaugeFull;
                         isMinusButtonClickable = true;
                     }
                 }
+
+                Timer {
+                    id: plusButtonTimer
+                    interval: 100
+                    repeat: true
+                    running: false
+                    onTriggered: {
+                        if (isPlusButtonClickable && value < maxValue) {
+                            value += 1;
+                            isPlusButtonClickable = !isGaugeFull;
+                            isMinusButtonClickable = true;
+                        }
+                    }
+                }
+
+                onPressed: {
+                    plusButtonTimer.start();
+                }
+
+                onReleased: {
+                    plusButtonTimer.stop();
+                }
             }
 
             Button {
+                id: minusButton
                 text: "-"
                 width: 40
                 height: 40
                 background: Rectangle {
                     color: isMinusButtonClickable ? "#ff82ab" : "red"
                 }
+
                 onClicked: {
                     if (isMinusButtonClickable && value > minValue) {
-                        value -= 1
+                        value -= 1;
                         isMinusButtonClickable = !isGaugeEmpty;
                         isPlusButtonClickable = true;
                     }
+                }
+
+                Timer {
+                    id: minusButtonTimer
+                    interval: 100
+                    repeat: true
+                    running: false
+                    onTriggered: {
+                        if (isMinusButtonClickable && value > minValue) {
+                            value -= 1;
+                            isMinusButtonClickable = !isGaugeEmpty;
+                            isPlusButtonClickable = true;
+                        }
+                    }
+                }
+
+                onPressed: {
+                    minusButtonTimer.start();
+                }
+
+                onReleased: {
+                    minusButtonTimer.stop();
                 }
             }
         }
